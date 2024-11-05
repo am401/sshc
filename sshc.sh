@@ -1,19 +1,17 @@
 #!/bin/sh
 
 # Read JSON config file
-configfile=$(cat config.json | jq)
+configfile=$(<config.json)
 
-#index=$(echo $configfile | jq '.[] | index("AWS EC2")')
-#sshname=$(cat $configfile | jq -r 'to_entries[] | .value.name' | fzf)
-sshname=$(cat config.json | jq -r 'to_entries[] | .value.name' | fzf --border=rounded --margin=5% --prompt="Select SSH host > ")
+sshname=$(jq -r 'to_entries[] | .value.name' <<< "$configfile" | fzf)
 
-index=$(cat config.json | jq --arg jq_sshname "${sshname}" 'to_entries[] | select(.value.name==$jq_sshname) | .key')
+index=$(jq --arg jq_sshname "${sshname}" 'to_entries[] | select(.value.name==$jq_sshname) | .key' <<< "$configfile")
 
-name=$(echo $configfile | jq -r --arg index "$index" '.[$index|tonumber] | .name')
-user=$(echo $configfile | jq -r --arg index "$index" '.[$index|tonumber] | .user')
-host=$(echo $configfile | jq -r --arg index "$index" '.[$index|tonumber] | .host')
-port=$(echo $configfile | jq -r --arg index "$index" '.[$index|tonumber] | .port')
-sshfile=$(echo $configfile | jq -r --arg index "$index" '.[$index|tonumber] | .sshfile')
+name=$(jq -r --arg index "$index" '.[$index|tonumber] | .name' <<< $configfile)
+user=$(jq -r --arg index "$index" '.[$index|tonumber] | .user' <<< $configfile)
+host=$(jq -r --arg index "$index" '.[$index|tonumber] | .host' <<< $configfile)
+port=$(jq -r --arg index "$index" '.[$index|tonumber] | .port' <<< $configfile)
+sshfile=$(jq -r --arg index "$index" '.[$index|tonumber] | .sshfile' <<< $configfile)
 
 echo "Connecting to ${name}"
 
