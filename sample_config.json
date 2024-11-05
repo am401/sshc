@@ -1,0 +1,15 @@
+[
+	{
+		"name": "One",
+		"user": "sample",
+		"host": "198.162.1.20",
+		"port": 22
+	},
+	{
+		"name": "Two",
+		"user": "test",
+		"host": "ssh.example.com",
+		"port": 2222,
+		"sshfile": "~/.ssh/prod.key"
+	}
+]
